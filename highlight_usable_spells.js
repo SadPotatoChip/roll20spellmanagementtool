@@ -1,13 +1,14 @@
     const preparedColor ="green";
     const usedColor = "#AA7A00";
     const grayedOutColor = "#333333";
+    const unversalDropdownValue = "All";
 
     var spellButtons = document.querySelectorAll('button[name="roll_spellroll"]');
     createToggle("Highlight", toggleHighlightPreparedSpells)
     createToggle("Hide", toggleUnpreparedSpellsVisbility)
-    createToggle("One Action", toggleOneActionSpellsVisbility)
     createToggle("Custom Font", toggleFont)
-    //createDropdown("Save Type", "@{save_type}")
+    createDropdown("Save Type", "@{save_type}")
+    createDropdown("Action", "@{cast_actions}")
 
 
     function createToggle(title, onToggleFunction, enabledByDefault = false){
@@ -68,9 +69,10 @@
         label.setAttribute("title", title)
         selectSpan.appendChild(label)
         
-        let options = ["All", "1", "2", "3"]
+        let options = getOptionsForDropdownTitle(dropdownTitle)
         let select = document.createElement("select")
         select.className = "simple"
+        select.name = "custom-dropdown"
         for (let i = 0; i < options.length; i++) {
             //<option value="fortitude" data-i18n="fortitude">fortitude</option>
             let option = document.createElement("option")
@@ -78,8 +80,9 @@
             option.innerHTML = options[i]
             select.appendChild(option)
         }
-
-        //select.addEventListener('change', onToggleFunction)
+        select.addEventListener('change', function() {
+            hideByDropdown(this.value, dropdownTitle)
+        });
         label.appendChild(select)
 
         //<span data-i18n="spells">spells</span>
@@ -87,6 +90,33 @@
         textSpan.innerHTML = title
         textSpan.setAttribute("data-i18n", title)
         wrapper.appendChild(textSpan)
+    }
+
+    function getOptionsForDropdownTitle(dropdownTitle){
+        let selectElement = document.querySelector('select[title="'+dropdownTitle+'"]')
+        return [unversalDropdownValue].concat([...selectElement.options].map(o => o.value))       
+    }
+
+    function hideByDropdown(value, dropdownTitle){
+        for (i = 0; i < spellButtons.length; i++) {
+            let parent = spellButtons[i].parentElement
+            let span = parent.querySelector('span[name="attr_name"]')
+            if(value == unversalDropdownValue){
+                parent.style.visibility = "visible"
+                continue
+            }
+
+            if(span.innerHTML.includes("---")){
+              continue
+            }
+    
+            let dropdown = parent.querySelector('select[title="'+dropdownTitle+'"]')
+
+            parent.style.visibility = "visible";
+            if(dropdown != null && dropdown.value != value){
+                parent.style.visibility = "hidden";
+            }   
+        }
     }
 
     //----------------------------------------------------------------------------------------------------
@@ -152,25 +182,6 @@
 
             parent.style.visibility = "visible";
             if(isActive && attr_uses != null && attr_uses.value == 0 && attr_uses_max != null && attr_uses_max.value == 0){
-                parent.style.visibility = "hidden";
-            }   
-        }
-    }
-
-    function toggleOneActionSpellsVisbility(event){
-        let isActive = event.currentTarget.checked
-
-        for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
-            let span = parent.querySelector('span[name="attr_name"]')
-            if(span.innerHTML.includes("---")){
-              continue;
-            }
-    
-            let selectElement = parent.querySelector('select[name="attr_cast_actions"]')
-
-            parent.style.visibility = "visible";
-            if(isActive && (selectElement.value != "1-action" && selectElement.value != "1-to-2-actions" && selectElement.value != "1-to-3-actions" )){
                 parent.style.visibility = "hidden";
             }   
         }
