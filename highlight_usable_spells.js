@@ -1,85 +1,104 @@
     const preparedColor ="green";
     const usedColor = "#AA7A00";
     const grayedOutColor = "#333333";
-    var highlightPreparedToggle = false;
-    var unpreparedSpellsHidden = false;
-    var nonOneActionSpellsHidden = false;
-    var customFontActive = false;
 
     var spellButtons = document.querySelectorAll('button[name="roll_spellroll"]');
-    createBtn("Toggle Highlights", highlightPreparedSpells)
-    createBtn("Toggle Visbility", toggleUnpreparedSpellsVisbility)
-    createBtn("One Action", toggleOneActionSpellsVisbility)
-    createBtn("Toggle Font", toggleFont)
+    createToggle("Highlight", toggleHighlightPreparedSpells)
+    createToggle("Hide", toggleUnpreparedSpellsVisbility)
+    createToggle("One Action", toggleOneActionSpellsVisbility)
+    createToggle("Custom Font", toggleFont)
+    //createDropdown("Save Type", "@{save_type}")
 
-    function createBtn(title, onClickFunction){
 
-      var wrapper = document.createElement("label")
+    function createToggle(title, onToggleFunction, enabledByDefault = false){
 
-      let spellsectiontoggles = document.querySelector('div[class="spellsectiontoggles background-color"]')
-      spellsectiontoggles.appendChild(wrapper)
+        let wrapper = document.createElement("label")
+        wrapper.className = "spellsectiontoggles-row"
 
-      var btn = document.createElement("button")
-      btn.className = "pc-spellcaster-field btn"
-      btn.style= "margin: auto; width: 100%";
-      btn.type = "roll"
+        let spellsectiontoggles = document.querySelector('div[class="spellsectiontoggles background-color"]')
+        spellsectiontoggles.appendChild(wrapper)
+        
+        //<span class="checkbox">
+        let toggleSpan = document.createElement("span")
+        toggleSpan.className = "checkbox"
+        wrapper.appendChild(toggleSpan)
+        
+        //<label class="switch" data-i18-titlen="spells" title="spells">
+        let label = document.createElement("label")
+        label.className = "switch"
+        label.setAttribute("title", title)
+        toggleSpan.appendChild(label)
 
-      btn.addEventListener("click", onClickFunction)
+        //<input name="attr_toggle_normalspells" title="@{toggle_normalspells}" type="checkbox" value="spells" checked="checked"> 
+        let checkbox = document.createElement("input")
+        checkbox.type = "checkbox"
+        checkbox.checked = enabledByDefault
+        checkbox.addEventListener('change', onToggleFunction)
+        label.appendChild(checkbox)
 
-      var span = document.createElement("span")
-      span.innerHTML = title
+        //<span class="slider"></span>
+        let slider = document.createElement("span")
+        slider.className = "slider"
+        //slider.innerHTML = "::before"
+        label.appendChild(slider)
 
-      btn.appendChild(span)
-      
-      wrapper.appendChild(btn)
+        //<span data-i18n="spells">spells</span>
+        let textSpan = document.createElement("span")
+        textSpan.innerHTML = title
+        textSpan.setAttribute("data-i18n", title)
+        wrapper.appendChild(textSpan)
 
+        
     }
 
-    function toggleOneActionSpellsVisbility(){
-        for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
-            let span = parent.querySelector('span[name="attr_name"]')
-            if(span.innerHTML.includes("---")){
-              continue;
-            }
-    
-            let selectElement = parent.querySelector('select[name="attr_cast_actions"]')
+    function createDropdown(title, dropdownTitle){
+        let wrapper = document.createElement("label")
+        wrapper.className = "spellsectiontoggles-row"
 
-            parent.style.visibility = "visible";
-            if(false == nonOneActionSpellsHidden && (selectElement.value != "1-action" && selectElement.value != "1-to-2-actions" && selectElement.value != "1-to-3-actions" )){
-                parent.style.visibility = "hidden";
-            }   
+        let spellsectiontoggles = document.querySelector('div[class="spellsectiontoggles background-color"]')
+        spellsectiontoggles.appendChild(wrapper)
+        
+        let selectSpan = document.createElement("span")
+        //toggleSpan.className = "checkbox"
+        wrapper.appendChild(selectSpan)
+
+        //<label class="switch" data-i18-titlen="spells" title="spells">
+        let label = document.createElement("label")
+        label.className = "switch"
+        label.setAttribute("title", title)
+        selectSpan.appendChild(label)
+        
+        let options = ["All", "1", "2", "3"]
+        let select = document.createElement("select")
+        select.className = "simple"
+        for (let i = 0; i < options.length; i++) {
+            //<option value="fortitude" data-i18n="fortitude">fortitude</option>
+            let option = document.createElement("option")
+            option.value = options[i]
+            option.innerHTML = options[i]
+            select.appendChild(option)
         }
-        nonOneActionSpellsHidden = !nonOneActionSpellsHidden;
+
+        //select.addEventListener('change', onToggleFunction)
+        label.appendChild(select)
+
+        //<span data-i18n="spells">spells</span>
+        var textSpan = document.createElement("span")
+        textSpan.innerHTML = title
+        textSpan.setAttribute("data-i18n", title)
+        wrapper.appendChild(textSpan)
     }
 
-    function toggleUnpreparedSpellsVisbility(){
+    //----------------------------------------------------------------------------------------------------
+
+    function toggleHighlightPreparedSpells(event){
+        let isActive = event.currentTarget.checked
 
         for (i = 0; i < spellButtons.length; i++) {
             let parent = spellButtons[i].parentElement
             let span = parent.querySelector('span[name="attr_name"]')
-            if(span.innerHTML.includes("---")){
-              continue;
-            }
-    
-            let attr_uses = parent.querySelector('input[name="attr_uses"]')
-            let attr_uses_max = parent.querySelector('input[name="attr_uses_max"]')
 
-            parent.style.visibility = "visible";
-            if(false == unpreparedSpellsHidden && attr_uses != null && attr_uses.value == 0 && attr_uses_max != null && attr_uses_max.value == 0){
-                parent.style.visibility = "hidden";
-            }   
-        }
-        unpreparedSpellsHidden = !unpreparedSpellsHidden;
-    }
-
-    function highlightPreparedSpells(){
-      
-        for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
-            let span = parent.querySelector('span[name="attr_name"]')
-
-            if(highlightPreparedToggle){
+            if(false == isActive){
                 spellButtons[i].removeAttribute("style")
                 continue;
             }
@@ -116,11 +135,49 @@
                 }        
             }      
         }
-
-        highlightPreparedToggle = !highlightPreparedToggle;
     }
 
-    function toggleFont(){
+    function toggleUnpreparedSpellsVisbility(event){
+        let isActive = event.currentTarget.checked
+
+        for (i = 0; i < spellButtons.length; i++) {
+            let parent = spellButtons[i].parentElement
+            let span = parent.querySelector('span[name="attr_name"]')
+            if(span.innerHTML.includes("---")){
+              continue;
+            }
+    
+            let attr_uses = parent.querySelector('input[name="attr_uses"]')
+            let attr_uses_max = parent.querySelector('input[name="attr_uses_max"]')
+
+            parent.style.visibility = "visible";
+            if(isActive && attr_uses != null && attr_uses.value == 0 && attr_uses_max != null && attr_uses_max.value == 0){
+                parent.style.visibility = "hidden";
+            }   
+        }
+    }
+
+    function toggleOneActionSpellsVisbility(event){
+        let isActive = event.currentTarget.checked
+
+        for (i = 0; i < spellButtons.length; i++) {
+            let parent = spellButtons[i].parentElement
+            let span = parent.querySelector('span[name="attr_name"]')
+            if(span.innerHTML.includes("---")){
+              continue;
+            }
+    
+            let selectElement = parent.querySelector('select[name="attr_cast_actions"]')
+
+            parent.style.visibility = "visible";
+            if(isActive && (selectElement.value != "1-action" && selectElement.value != "1-to-2-actions" && selectElement.value != "1-to-3-actions" )){
+                parent.style.visibility = "hidden";
+            }   
+        }
+    }
+
+    function toggleFont(event){
+        let isActive = event.currentTarget.checked
 
         for (i = 0; i < spellButtons.length; i++) {
             let parent = spellButtons[i].parentElement
@@ -128,11 +185,13 @@
     
             //span.style.fontFamily = "sans-serif"
             span.style.textTransform = "none"
-            if(customFontActive){
+            if(false == isActive){
                 //span.style.fontFamily = null
                 span.style.textTransform = null
             }   
         }
-        customFontActive = !customFontActive;
     }
+
+
+
 
