@@ -151,7 +151,7 @@
                 }       
             }else{
                 if(attr_uses.value > 0){
-                    if(span.innerHTML.includes("Staff") || span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand")){
+                    if(span.innerHTML.includes("Staff") || span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand") || span.innerHTML.includes("Scroll")){
                         spellButtons[i].style.backgroundColor = "darkred";
                         continue;
                     }
