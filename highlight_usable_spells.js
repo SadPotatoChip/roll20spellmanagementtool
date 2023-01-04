@@ -150,8 +150,12 @@
                     spellButtons[i].style.backgroundColor = usedColor
                 }       
             }else{
+                if(span.innerHTML.includes("Staff") ){
+                    spellButtons[i].style.backgroundColor = "#50aeb5";
+                    continue;
+                }
                 if(attr_uses.value > 0){
-                    if(span.innerHTML.includes("Staff") || span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand") || span.innerHTML.includes("Scroll")){
+                    if(span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand") || span.innerHTML.includes("Scroll")){
                         spellButtons[i].style.backgroundColor = "darkred";
                         continue;
                     }
@@ -173,7 +177,7 @@
         for (i = 0; i < spellButtons.length; i++) {
             let parent = spellButtons[i].parentElement
             let span = parent.querySelector('span[name="attr_name"]')
-            if(span.innerHTML.includes("---")){
+            if(span.innerHTML.includes("---") || span.innerHTML.includes("Staff")){
               continue;
             }
     
