@@ -26,14 +26,32 @@ function createOverrideButton(){
     let spellTextInput = document.createElement("textarea")
     spellTextInput.id = "spell-text-input"
     wrapper.appendChild(spellTextInput)
+
+
+    let select = document.createElement("select")
+    select.className = "simple"
+    select.id = "section-select"
+    let options = ["normalspells", "cantrips", "focus", "innate"]
+    for (let i = 0; i < options.length; i++) {
+        let option = document.createElement("option")
+        option.value = options[i]
+        option.innerHTML = options[i]
+        select.appendChild(option)
+    }
+
+    wrapper.appendChild(select)
 }
 
 function overrideFinalSpell(){
     let spellText = document.getElementById("spell-text-input").value
     let parsedSpell = parseSpell(spellText)
 
-    let rows = document.querySelectorAll('div[class="spell-panel-row"]')
+    let rows = document.querySelector('div[class="background-color ' + document.getElementById("section-select").value + ' compendium-drop-target"]').querySelectorAll('div[class="spell-panel-row"]')
     let row = rows[rows.length-1]
+
+    for (const [key, value] of Object.entries(parsedSpell.dropdowns)) {
+        trySetInputValueDropdown(row, parsedSpell.dropdowns, key)
+    }
 
     for (const [key, value] of Object.entries(parsedSpell.textInputs)) {
         trySetInputValue(row, parsedSpell.textInputs, key)
@@ -41,10 +59,6 @@ function overrideFinalSpell(){
 
     for (const [key, value] of Object.entries(parsedSpell.textAreas)) {
         trySetInputValueTextArea(row, parsedSpell.textAreas, key)
-    }
-
-    for (const [key, value] of Object.entries(parsedSpell.dropdowns)) {
-        trySetInputValueDropdown(row, parsedSpell.dropdowns, key)
     }
 
     focusOnField(row, "name")
@@ -229,7 +243,6 @@ function trySetInputValueDropdown(row, spell, inputTitle){
     
     let input = row.querySelector('select[title="@{'+inputTitle+'}"]')
     input.value = value
-    input.focus()
 }
 
 function focusOnField(row, inputTitle){
