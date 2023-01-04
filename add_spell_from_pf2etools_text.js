@@ -128,7 +128,7 @@ function parseSpell(spellText){
         spell.textAreas.save_failure = fail.slice("Failure ".length);
     }
     if(critFailureStartIndex!=maxLine){
-        let critFail = concatStringsBetweenIndexes(lines, critFailureStartIndex, Math.min(hightenedSectionIndex - 1))
+        let critFail = concatStringsBetweenIndexes(lines, critFailureStartIndex, Math.min(hightenedSectionIndex - 1, lines.length - 1))
         spell.textAreas.save_critical_failure = critFail.slice("Critical Failure ".length);
     }
 
