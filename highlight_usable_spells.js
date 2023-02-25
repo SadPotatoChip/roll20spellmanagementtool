@@ -99,7 +99,7 @@
 
     function hideByDropdown(value, dropdownTitle){
         for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
+            let parent = spellButtons[i].parentElement.parentElement
             let span = parent.querySelector('span[name="attr_name"]')
             if(value == unversalDropdownValue){
                 parent.style.visibility = "visible"
@@ -125,19 +125,23 @@
         let isActive = event.currentTarget.checked
 
         for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
+            let parent = spellButtons[i].parentElement.parentElement
             let span = parent.querySelector('span[name="attr_name"]')
 
             if(false == isActive){
-                spellButtons[i].removeAttribute("style")
+                removeColorFromButton(spellButtons[i])
                 continue;
             }
 
             if(span.innerHTML.includes("---")){
-                spellButtons[i].style.backgroundColor = "black";
+                colorButton(spellButtons[i], "black");
+                continue;
+            }            
+
+            if(span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand") || span.innerHTML.includes("Scroll") || span.innerHTML.includes("Feat")){
+                colorButton(spellButtons[i], "darkred");
                 continue;
             }
-            
 
             let attr_uses = parent.querySelector('input[name="attr_uses"]')
             let attr_uses_max = parent.querySelector('input[name="attr_uses_max"]')
@@ -145,26 +149,22 @@
             if(attr_uses == null){
                 let attr_focus_points = document.querySelector('input[name="attr_focus_points"]')
                 if(attr_focus_points!= null && attr_focus_points.value > 0){
-                    spellButtons[i].style.backgroundColor = preparedColor
+                    colorButton(spellButtons[i], preparedColor)
                 }else{
-                    spellButtons[i].style.backgroundColor = usedColor
+                    colorButton(spellButtons[i], usedColor)
                 }       
             }else{
                 if(span.innerHTML.includes("Staff") ){
-                    spellButtons[i].style.backgroundColor = "#50aeb5";
+                    colorButton(spellButtons[i], "#50aeb5");
                     continue;
                 }
                 if(attr_uses.value > 0){
-                    if(span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand") || span.innerHTML.includes("Scroll")){
-                        spellButtons[i].style.backgroundColor = "darkred";
-                        continue;
-                    }
-                    spellButtons[i].style.backgroundColor = preparedColor
+                    colorButton(spellButtons[i], preparedColor)
                 }else if (attr_uses_max.value > 0){
-                    spellButtons[i].style.backgroundColor = usedColor
+                    colorButton(spellButtons[i], usedColor)
 
                 }else{
-                    spellButtons[i].style.backgroundColor = grayedOutColor        
+                    colorButton(spellButtons[i], grayedOutColor)        
 
                 }        
             }      
@@ -175,7 +175,7 @@
         let isActive = event.currentTarget.checked
 
         for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
+            let parent = spellButtons[i].parentElement.parentElement
             let span = parent.querySelector('span[name="attr_name"]')
             if(span.innerHTML.includes("---") || span.innerHTML.includes("Staff")){
               continue;
@@ -195,7 +195,7 @@
         let isActive = event.currentTarget.checked
 
         for (i = 0; i < spellButtons.length; i++) {
-            let parent = spellButtons[i].parentElement
+            let parent = spellButtons[i].parentElement.parentElement
             let span = parent.querySelector('span[name="attr_name"]')
     
             //span.style.fontFamily = "sans-serif"
@@ -207,6 +207,39 @@
         }
     }
 
+    function colorButton(button, color){
+        if(button == undefined){
+            return;
+        }
 
+        button.style.backgroundColor = color
+        let parent = button.parentElement.parentElement
+        let num2 = parent.querySelector('button[name="roll_spellroll2"]')
+        if(num2){
+            num2.style.backgroundColor = color
+        }
+        let num3 = parent.querySelector('button[name="roll_spellroll3"]')
+        if(num3){
+            num3.style.backgroundColor = color
+        }
+    }
 
+    function removeColorFromButton(button){
+        if(button == undefined){
+            return;
+        }
+        
+        button.removeAttribute("style")
+        let parent = button.parentElement.parentElement
+        let num2 = parent.querySelector('button[name="roll_spellroll2"]')
+        if(num2){
+            num2.removeAttribute("style")
+        }
+        let num3 = parent.querySelector('button[name="roll_spellroll3"]')
+        if(num3){
+            num3.removeAttribute("style")
+        }
+        
+    }
 
+    
