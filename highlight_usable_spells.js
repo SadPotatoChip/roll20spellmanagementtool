@@ -1,6 +1,8 @@
     const preparedColor ="green";
     const usedColor = "#AA7A00";
     const grayedOutColor = "#333333";
+    const itemColor = "#a133a5"
+
     const unversalDropdownValue = "All";
 
     var spellButtons = document.querySelectorAll('button[name="roll_spellroll"]');
@@ -9,6 +11,7 @@
     createToggle("Custom Font", toggleFont)
     createDropdown("Save Type", "@{save_type}")
     createDropdown("Action", "@{cast_actions}")
+    //createDropdown("School", "@{school}")
 
 
     function createToggle(title, onToggleFunction, enabledByDefault = false){
@@ -139,7 +142,7 @@
             }            
 
             if(span.innerHTML.includes("Mask") || span.innerHTML.includes("Item") || span.innerHTML.includes("Wand") || span.innerHTML.includes("Scroll") || span.innerHTML.includes("Feat")){
-                colorButton(spellButtons[i], "darkred");
+                colorButton(spellButtons[i], itemColor);
                 continue;
             }
 
